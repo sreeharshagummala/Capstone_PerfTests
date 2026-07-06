@@ -1,4 +1,5 @@
 import os
+import json
 from pathlib import Path
 
 # Import parsers from separate modules
@@ -12,6 +13,8 @@ from text_parsers import parse_markdown_as_text
 # =========================
 # Use absolute path relative to this script's location
 DATA_DIR = str(Path(__file__).parent.parent / "ProjectSampleDocs")
+OUTPUT_DIR = str(Path(__file__).parent.parent / "output")
+OUTPUT_FILE = str(Path(OUTPUT_DIR) / "parsed_documents.json")
 
 
 
@@ -55,7 +58,17 @@ def build_context():
 # 9. RUN
 # =========================
 if __name__ == "__main__":
+    # Create output directory if it doesn't exist
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    # Build the context
     context = build_context()
 
-    import json
+    # Print to console
     print(json.dumps(context, indent=2))
+
+    # Save to file
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(context, f, indent=2, ensure_ascii=False)
+
+    print(f"\n✓ Output saved to: {OUTPUT_FILE}")
