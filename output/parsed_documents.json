@@ -1,0 +1,294 @@
+{
+  "architecture_raw": "# ShopSphere E-Commerce Platform\n## Architecture Design Document\n\n**Version:** 1.2\n\n**Author:** Enterprise Architecture Team\n\n**Last Updated:** 02-Jul-2026\n\n---\n\n# 1. Introduction\n\nShopSphere is a cloud-native e-commerce application developed using a microservices architecture. The platform enables customers to browse products, manage shopping carts, place orders, complete payments, and track shipments.\n\nThe platform is expected to support high traffic during seasonal sales and promotional campaigns while maintaining high availability and low response times.\n\n---\n\n# 2. Business Capabilities\n\nThe application provides the following business functions:\n\n- User Registration\n- Login & Authentication\n- Product Browsing\n- Product Search\n- Shopping Cart\n- Checkout\n- Payment Processing\n- Order Management\n- Shipment Tracking\n- Notifications\n\n---\n\n# 3. High Level Architecture\n\n```\n                     Internet\n                         |\n                    Cloud CDN\n                         |\n                  Load Balancer\n                         |\n                   API Gateway\n                         |\n     -------------------------------------------------\n     |        |        |       |        |            |\n Auth     Product   Order   Payment   Cart     Notification\nService    Service  Service  Service  Service     Service\n     |         |        |        |        |            |\n Redis     PostgreSQL PostgreSQL Stripe  Redis       Kafka\n     |\n PostgreSQL\n```\n\n---\n\n# 4. Technology Stack\n\n| Layer | Technology |\n|---------|------------|\n| Frontend | React |\n| Backend | Spring Boot |\n| API Gateway | Kong |\n| Authentication | JWT |\n| Database | PostgreSQL |\n| Cache | Redis |\n| Message Broker | Kafka |\n| Container | Docker |\n| Orchestration | Kubernetes |\n| Monitoring | Prometheus |\n| Dashboard | Grafana |\n\n---\n\n# 5. Microservices\n\n## 5.1 Authentication Service\n\nResponsibilities\n\n- User Login\n- Registration\n- JWT Token Generation\n- Password Reset\n\nDatabase\n\nAuthenticationDB (PostgreSQL)\n\nCache\n\nRedis\n\nCritical APIs\n\nPOST /login\n\nPOST /register\n\nPOST /refresh-token\n\n---\n\n## 5.2 Product Service\n\nResponsibilities\n\n- Product Catalog\n- Search Products\n- Categories\n- Inventory Lookup\n\nDatabase\n\nProductDB\n\nCache\n\nRedis\n\nCritical APIs\n\nGET /products\n\nGET /products/{id}\n\nGET /search\n\n---\n\n## 5.3 Cart Service\n\nResponsibilities\n\n- Add Item\n- Remove Item\n- Update Quantity\n- View Cart\n\nDatabase\n\nCartDB\n\nCache\n\nRedis\n\nCritical APIs\n\nPOST /cart\n\nPUT /cart\n\nDELETE /cart\n\nGET /cart\n\n---\n\n## 5.4 Order Service\n\nResponsibilities\n\n- Create Order\n- Update Order\n- Order History\n- Shipment Status\n\nDatabase\n\nOrderDB\n\nCritical APIs\n\nPOST /orders\n\nGET /orders\n\nGET /orders/{id}\n\n---\n\n## 5.5 Payment Service\n\nResponsibilities\n\n- Process Payments\n- Refunds\n- Payment Status\n\nExternal Dependency\n\nStripe Payment Gateway\n\nCritical APIs\n\nPOST /payment\n\nPOST /refund\n\nGET /payment/status\n\n---\n\n## 5.6 Notification Service\n\nResponsibilities\n\n- Email Notifications\n- SMS Notifications\n- Order Confirmation\n\nMessaging\n\nKafka\n\n---\n\n# 6. Database Architecture\n\nAuthenticationDB\n\nStores\n\n- Users\n- Roles\n- Credentials\n\nProductDB\n\nStores\n\n- Products\n- Categories\n- Inventory\n\nOrderDB\n\nStores\n\n- Orders\n- Order Items\n- Shipment\n\nCartDB\n\nStores\n\n- Cart\n- Cart Items\n\n---\n\n# 7. External Integrations\n\nStripe Payment Gateway\n\nPurpose\n\nPayment Authorization\n\nShipping Provider API\n\nPurpose\n\nShipment Tracking\n\nEmail Service\n\nPurpose\n\nEmail Delivery\n\nSMS Gateway\n\nPurpose\n\nOTP and Alerts\n\n---\n\n# 8. Communication Pattern\n\nClient\n\n↓\n\nAPI Gateway\n\n↓\n\nAuthentication\n\n↓\n\nBusiness Service\n\n↓\n\nDatabase\n\n↓\n\nKafka Event\n\n↓\n\nNotification Service\n\n---\n\n# 9. Deployment Architecture\n\nEnvironment\n\nProduction\n\nDeployment Platform\n\nKubernetes\n\nMinimum Pods\n\n2\n\nMaximum Pods\n\n15\n\nAuto Scaling\n\nEnabled\n\nHorizontal Pod Autoscaler\n\nEnabled\n\n---\n\n# 10. Performance Considerations\n\nThe Product Service is expected to receive the highest traffic because every customer interaction begins with product browsing.\n\nAuthentication Service experiences traffic spikes during promotional events.\n\nPayment Service has strict latency requirements due to third-party gateway integration.\n\nOrder Service performs multiple database transactions and is considered transaction-heavy.\n\nRedis caching is implemented for:\n\n- Product Catalog\n- User Sessions\n- Shopping Cart\n\nKafka is used to decouple Notification processing from Order creation.\n\n---\n\n# 11. Critical User Journeys\n\nJourney 1\n\nUser Login\n\n↓\n\nBrowse Products\n\n↓\n\nSearch Product\n\n↓\n\nAdd to Cart\n\n↓\n\nCheckout\n\n↓\n\nPayment\n\n↓\n\nOrder Confirmation\n\n---\n\nJourney 2\n\nGuest Browse\n\n↓\n\nProduct Search\n\n↓\n\nRegistration\n\n↓\n\nCheckout\n\n---\n\nJourney 3\n\nTrack Shipment\n\n↓\n\nLogin\n\n↓\n\nOrder History\n\n↓\n\nShipment Tracking\n\n---\n\n# 12. Availability Requirements\n\nSystem Availability\n\n99.95%\n\nRecovery Time Objective (RTO)\n\n30 minutes\n\nRecovery Point Objective (RPO)\n\n5 minutes\n\n---\n\n# 13. Scalability\n\nThe application must support\n\n- 10,000 concurrent users\n- 1,500 requests per second\n- Auto scaling within 2 minutes\n- Zero downtime deployments\n\n---\n\n# 14. Monitoring\n\nApplication Metrics\n\n- Response Time\n- Throughput\n- Error Rate\n\nInfrastructure Metrics\n\n- CPU Utilization\n- Memory Utilization\n- Pod Count\n- Disk Usage\n\nBusiness Metrics\n\n- Orders per Minute\n- Successful Payments\n- Failed Payments\n- Active Users\n\n---\n\n# 15. Risks\n\n- Payment Gateway latency\n- Database contention during checkout\n- Cache eviction during flash sales\n- Kafka backlog under peak load\n- Inventory synchronization delays\n\n---\n\n# 16. Architecture Summary\n\nThe ShopSphere platform follows a cloud-native microservices architecture optimized for scalability and high availability. The system relies heavily on Redis for caching, Kafka for asynchronous communication, PostgreSQL for transactional data, and Kubernetes for orchestration. The Product Service and Authentication Service are expected to receive the highest traffic, while the Payment and Order Services are identified as business-critical components requiring comprehensive performance testing.",
+  "deployment": [
+    {
+      "service": "shopsphere-api-gateway",
+      "replicas": 3,
+      "cpu_request": "500m",
+      "memory_request": "512Mi",
+      "cpu_limit": "1000m",
+      "memory_limit": "1Gi"
+    },
+    {
+      "service": "shopsphere-product-service",
+      "replicas": 3,
+      "cpu_request": "700m",
+      "memory_request": "1Gi",
+      "cpu_limit": "1500m",
+      "memory_limit": "2Gi"
+    },
+    {
+      "service": "shopsphere-cart-service",
+      "replicas": 2,
+      "cpu_request": "400m",
+      "memory_request": "512Mi",
+      "cpu_limit": "1000m",
+      "memory_limit": "1Gi"
+    },
+    {
+      "service": "shopsphere-order-service",
+      "replicas": 2,
+      "cpu_request": "800m",
+      "memory_request": "1Gi",
+      "cpu_limit": "2000m",
+      "memory_limit": "3Gi"
+    },
+    {
+      "service": "shopsphere-payment-service",
+      "replicas": 2,
+      "cpu_request": "1000m",
+      "memory_request": "2Gi",
+      "cpu_limit": "2500m",
+      "memory_limit": "4Gi"
+    }
+  ],
+  "metrics": [
+    {
+      "Endpoint": "/cart",
+      "P95(ms)": 332.5,
+      "P99(ms)": 471.875,
+      "TPS": 281.25,
+      "ErrorRate(%)": 0.23625000000000002
+    },
+    {
+      "Endpoint": "/login",
+      "P95(ms)": 241.66666666666666,
+      "P99(ms)": 357.5,
+      "TPS": 268.3333333333333,
+      "ErrorRate(%)": 0.16166666666666665
+    },
+    {
+      "Endpoint": "/notifications",
+      "P95(ms)": 142.5,
+      "P99(ms)": 215.0,
+      "TPS": 167.5,
+      "ErrorRate(%)": 0.03
+    },
+    {
+      "Endpoint": "/orders",
+      "P95(ms)": 627.1428571428571,
+      "P99(ms)": 880.0,
+      "TPS": 142.85714285714286,
+      "ErrorRate(%)": 1.342857142857143
+    },
+    {
+      "Endpoint": "/payment",
+      "P95(ms)": 900.0,
+      "P99(ms)": 1215.0,
+      "TPS": 99.0,
+      "ErrorRate(%)": 2.783333333333333
+    },
+    {
+      "Endpoint": "/payment/status/{paymentId}",
+      "P95(ms)": 305.0,
+      "P99(ms)": 440.0,
+      "TPS": 155.0,
+      "ErrorRate(%)": 0.175
+    },
+    {
+      "Endpoint": "/products",
+      "P95(ms)": 185.5,
+      "P99(ms)": 270.0,
+      "TPS": 1195.0,
+      "ErrorRate(%)": 0.06
+    },
+    {
+      "Endpoint": "/products/{id}",
+      "P95(ms)": 190.66666666666666,
+      "P99(ms)": 276.6666666666667,
+      "TPS": 1020.0,
+      "ErrorRate(%)": 0.05333333333333334
+    },
+    {
+      "Endpoint": "/refund",
+      "P95(ms)": 736.6666666666666,
+      "P99(ms)": 1038.3333333333333,
+      "TPS": 22.666666666666668,
+      "ErrorRate(%)": 1.8
+    },
+    {
+      "Endpoint": "/register",
+      "P95(ms)": 290.0,
+      "P99(ms)": 430.0,
+      "TPS": 45.0,
+      "ErrorRate(%)": 0.3
+    },
+    {
+      "Endpoint": "/search",
+      "P95(ms)": 309.1666666666667,
+      "P99(ms)": 462.5,
+      "TPS": 846.6666666666666,
+      "ErrorRate(%)": 0.13999999999999999
+    }
+  ],
+  "infrastructure": [
+    {
+      "Service": "api-gateway",
+      "CPUUtilization(%)": 83,
+      "MemoryUtilization(%)": 85,
+      "RequestsPerSecond": 2100,
+      "P95Latency(ms)": 370,
+      "HTTP5xxErrors": 39
+    },
+    {
+      "Service": "auth-service",
+      "CPUUtilization(%)": 68,
+      "MemoryUtilization(%)": 74,
+      "RequestsPerSecond": 430,
+      "P95Latency(ms)": 295,
+      "HTTP5xxErrors": 7
+    },
+    {
+      "Service": "cart-service",
+      "CPUUtilization(%)": 79,
+      "MemoryUtilization(%)": 81,
+      "RequestsPerSecond": 910,
+      "P95Latency(ms)": 420,
+      "HTTP5xxErrors": 24
+    },
+    {
+      "Service": "notification-service",
+      "CPUUtilization(%)": 35,
+      "MemoryUtilization(%)": 42,
+      "RequestsPerSecond": 180,
+      "P95Latency(ms)": 135,
+      "HTTP5xxErrors": 0
+    },
+    {
+      "Service": "order-service",
+      "CPUUtilization(%)": 93,
+      "MemoryUtilization(%)": 94,
+      "RequestsPerSecond": 470,
+      "P95Latency(ms)": 930,
+      "HTTP5xxErrors": 63
+    },
+    {
+      "Service": "payment-service",
+      "CPUUtilization(%)": 98,
+      "MemoryUtilization(%)": 96,
+      "RequestsPerSecond": 195,
+      "P95Latency(ms)": 1290,
+      "HTTP5xxErrors": 87
+    },
+    {
+      "Service": "product-service",
+      "CPUUtilization(%)": 85,
+      "MemoryUtilization(%)": 88,
+      "RequestsPerSecond": 2480,
+      "P95Latency(ms)": 240,
+      "HTTP5xxErrors": 16
+    }
+  ],
+  "nfr_raw": "# ShopSphere - Non Functional Requirements (NFR) Document\n\n**System:** ShopSphere E-Commerce Platform  \n**Version:** 1.0  \n**Last Updated:** 02-Jul-2026\n\n---\n\n# 1. Purpose\n\nThis document defines the non-functional requirements for the ShopSphere platform including performance, scalability, availability, reliability, and security expectations.\n\nThese requirements are used to design system architecture, define SLAs, and validate performance testing outcomes.\n\n---\n\n# 2. Performance Requirements\n\n## 2.1 Response Time SLAs\n\n| API Type | P95 Response Time | P99 Response Time |\n|----------|------------------|-------------------|\n| Authentication APIs (/login, /register) | < 200 ms | < 400 ms |\n| Product Browsing APIs (/products, /search) | < 250 ms | < 500 ms |\n| Cart APIs (/cart) | < 300 ms | < 600 ms |\n| Order APIs (/orders) | < 500 ms | < 900 ms |\n| Payment APIs (/payment) | < 700 ms | < 1200 ms |\n\n---\n\n## 2.2 Throughput Requirements\n\n- Minimum system throughput: **1500 requests/second**\n- Peak throughput during sales events: **3000 requests/second**\n- Product catalog service must handle up to **2500 RPS**\n- Order service must handle up to **500 RPS**\n- Payment service must handle up to **200 RPS**\n\n---\n\n## 2.3 Concurrency Requirements\n\n- Minimum concurrent users: **10,000**\n- Peak concurrent users: **25,000**\n- Login bursts up to **2,000 requests/second**\n\n---\n\n# 3. Availability Requirements\n\n- System Availability: **99.95%**\n- Maximum planned downtime: **< 22 minutes/month**\n- Unplanned downtime: **< 10 minutes/month**\n\n---\n\n# 4. Reliability Requirements\n\n- Error rate must be **< 1% under normal load**\n- Error rate must be **< 3% under peak load**\n- Payment failure rate must be **< 0.5%**\n- Retry mechanism must handle transient failures automatically\n\n---\n\n# 5. Scalability Requirements\n\n- System must auto-scale within **2 minutes**\n- Horizontal Pod Autoscaling enabled for all stateless services\n- System must support **3x traffic spikes** without degradation\n- Stateless services must scale independently\n\n---\n\n# 6. Resource Utilization Limits\n\n- CPU utilization threshold: **80% (warning), 90% (critical)**\n- Memory utilization threshold: **75% (warning), 85% (critical)**\n- Disk usage threshold: **80% max**\n- Network saturation must not exceed **70%**\n\n---\n\n# 7. Performance Test Types\n\n## 7.1 Load Testing\n- Simulate expected production traffic\n- Duration: 30–60 minutes\n- Goal: Validate SLAs\n\n## 7.2 Stress Testing\n- Increase load until system failure\n- Identify breaking point\n\n## 7.3 Spike Testing\n- Sudden increase in traffic (5x baseline within 1 minute)\n- Validate autoscaling behavior\n\n## 7.4 Soak Testing\n- Continuous load for 6–8 hours\n- Detect memory leaks and degradation\n\n---\n\n# 8. Business Critical Flows\n\nThe following flows are considered critical:\n\n1. User Login → Product Search → Add to Cart → Checkout → Payment → Order Confirmation\n2. Product browsing under high traffic conditions\n3. Payment processing via external gateway\n4. Order creation and fulfillment\n\n---\n\n# 9. Bottleneck Sensitivity\n\nThe system is most sensitive to:\n\n- Payment service latency (external dependency)\n- Order service database contention\n- Product service caching efficiency\n- Kafka backlog during peak events\n- Redis eviction during flash sales\n\n---\n\n# 10. Failure Handling Requirements\n\n- Circuit breakers must be implemented for external APIs\n- Retry with exponential backoff must be enabled\n- Graceful degradation must be supported\n- Partial system failure should not affect product browsing\n\n---\n\n# 11. Monitoring Requirements\n\n## Metrics to Track\n\n- Response time (avg, P95, P99)\n- Requests per second\n- Error rates\n- CPU/Memory utilization\n- Pod scaling events\n- Queue depth (Kafka)\n\n---\n\n# 12. SLA Summary\n\n| Component | SLA Target |\n|-----------|-----------|\n| System Availability | 99.95% |\n| API Success Rate | > 99% |\n| Payment Success Rate | > 99.5% |\n| Response Time (P95) | < 500 ms overall |\n\n---\n\n# 13. Summary\n\nShopSphere is designed as a high-scale distributed system capable of handling large traffic spikes. Performance testing must ensure that SLAs are met under normal, peak, and failure conditions. The system must degrade gracefully under extreme load while maintaining core business functionality.",
+  "api": [
+    {
+      "path": "/login",
+      "method": "POST",
+      "summary": "User Login",
+      "auth": false
+    },
+    {
+      "path": "/register",
+      "method": "POST",
+      "summary": "Register User",
+      "auth": false
+    },
+    {
+      "path": "/products",
+      "method": "GET",
+      "summary": "List Products",
+      "auth": false
+    },
+    {
+      "path": "/products/{id}",
+      "method": "GET",
+      "summary": "Get Product Details",
+      "auth": false
+    },
+    {
+      "path": "/search",
+      "method": "GET",
+      "summary": "Search Products",
+      "auth": false
+    },
+    {
+      "path": "/cart",
+      "method": "GET",
+      "summary": "View Cart",
+      "auth": true
+    },
+    {
+      "path": "/cart",
+      "method": "POST",
+      "summary": "Add Item To Cart",
+      "auth": true
+    },
+    {
+      "path": "/cart",
+      "method": "PUT",
+      "summary": "Update Cart Item",
+      "auth": true
+    },
+    {
+      "path": "/cart",
+      "method": "DELETE",
+      "summary": "Remove Item From Cart",
+      "auth": true
+    },
+    {
+      "path": "/orders",
+      "method": "POST",
+      "summary": "Create Order",
+      "auth": true
+    },
+    {
+      "path": "/orders",
+      "method": "GET",
+      "summary": "Get Order History",
+      "auth": true
+    },
+    {
+      "path": "/orders/{orderId}",
+      "method": "GET",
+      "summary": "Get Order Details",
+      "auth": true
+    },
+    {
+      "path": "/payment",
+      "method": "POST",
+      "summary": "Process Payment",
+      "auth": true
+    },
+    {
+      "path": "/refund",
+      "method": "POST",
+      "summary": "Refund Payment",
+      "auth": true
+    },
+    {
+      "path": "/payment/status/{paymentId}",
+      "method": "GET",
+      "summary": "Payment Status",
+      "auth": true
+    },
+    {
+      "path": "/notifications",
+      "method": "GET",
+      "summary": "Notification History",
+      "auth": true
+    }
+  ],
+  "guidelines_raw": "# ShopSphere - Performance Testing Guidelines\n\n**System:** ShopSphere E-Commerce Platform  \n**Version:** 1.0  \n**Last Updated:** 02-Jul-2026\n\n---\n\n# 1. Purpose\n\nThis document defines standardized performance testing practices for ShopSphere. It ensures consistency across load, stress, spike, and soak testing activities and guides automated test generation systems.\n\n---\n\n# 2. Core Principles\n\n- Tests must simulate **real user behavior**, not synthetic API calls\n- Workload must reflect **business critical journeys**\n- All tests must include **think time and user delays**\n- API-only testing is insufficient without end-to-end flows\n- Metrics must be analyzed at **P95 and P99 percentiles**\n\n---\n\n# 3. Workload Modeling Rules\n\n## 3.1 User Behavior Distribution\n\nTypical e-commerce usage pattern:\n\n| User Activity | Percentage |\n|--------------|------------|\n| Browse Products | 100% |\n| Search Products | 85% |\n| View Product Details | 80% |\n| Add to Cart | 60% |\n| Checkout Initiation | 30% |\n| Payment Completion | 20% |\n\n---\n\n## 3.2 Traffic Mix Rules\n\n- 60% traffic = Product browsing APIs\n- 20% traffic = Search APIs\n- 10% traffic = Cart operations\n- 5% traffic = Order APIs\n- 5% traffic = Payment APIs\n\n---\n\n## 3.3 Think Time Guidelines\n\nTo simulate real users:\n\n| Action | Think Time |\n|--------|------------|\n| Browse Products | 1–3 sec |\n| Search | 2–4 sec |\n| Add to Cart | 2–5 sec |\n| Checkout | 3–6 sec |\n| Payment | 1–2 sec |\n\n---\n\n# 4. Load Test Design\n\n## 4.1 Baseline Load Test\n\n- Start with 10–20% of expected production load\n- Ramp up gradually over 10–15 minutes\n- Sustain load for 30–60 minutes\n- Monitor SLA compliance\n\n---\n\n## 4.2 Ramp-Up Strategy\n\nRecommended pattern:\n\n```\n0% → 25% (5 min)\n25% → 50% (5 min)\n50% → 75% (5 min)\n75% → 100% (10 min)\n100% → steady state (30 min)\n```\n\n---\n\n# 5. Stress Testing Strategy\n\n- Increase load beyond system capacity\n- Identify breaking point of:\n    - Order Service\n    - Payment Service\n    - Database layer\n\nFailure indicators:\n- Error rate > 5%\n- P95 latency > SLA x 2\n- CPU > 95%\n\n---\n\n# 6. Spike Testing Strategy\n\nSimulate flash sale behavior:\n\n- Baseline load: 500 users\n- Spike: 3000–5000 users within 60 seconds\n- Observe autoscaling behavior\n\nExpected behavior:\n- Autoscaling within 2–3 minutes\n- Temporary latency increase acceptable\n- No system crash\n\n---\n\n# 7. Soak Testing Strategy\n\n- Duration: 6–8 hours\n- Load: 60–70% of peak capacity\n- Purpose:\n    - Memory leak detection\n    - Resource exhaustion\n    - Queue buildup detection\n\n---\n\n# 8. Critical User Journeys\n\nAll performance tests must include:\n\n## Journey 1 (Primary Revenue Flow)\nLogin → Browse Products → Search → Add to Cart → Checkout → Payment → Order Confirmation\n\n## Journey 2 (Browsing Heavy)\nBrowse Products → Search → Product Details → Repeat\n\n## Journey 3 (Cart Abandonment)\nBrowse → Add to Cart → Exit\n\n---\n\n# 9. API Prioritization Rules\n\nHigh Priority APIs:\n- /login\n- /products\n- /search\n- /orders\n- /payment\n\nMedium Priority APIs:\n- /cart\n- /notifications\n\nLow Priority APIs:\n- /profile\n- /wishlist (future scope)\n\n---\n\n# 10. Performance Benchmarks (Industry Reference)\n\n- E-commerce P95 response time: **< 500 ms**\n- Checkout flow latency: **< 2 seconds end-to-end**\n- Search response time: **< 300 ms**\n- Payment success rate: **> 99.5%**\n- System error rate: **< 1%**\n\n---\n\n# 11. Data Realism Requirements\n\nTest data must simulate:\n\n- 10k–50k users\n- Product catalog size: 50k–200k items\n- Cart size: 1–10 items per user\n- Order frequency spikes during peak hours\n\n---\n\n# 12. Tooling Guidelines\n\n- Prefer k6 for cloud-native testing\n- JMeter used for legacy compatibility\n- All tests must be version-controlled\n- Scripts must be parameterized\n- Avoid hardcoded user IDs or tokens\n\n---\n\n# 13. Monitoring During Tests\n\nMust capture:\n\n- P50, P95, P99 latency\n- CPU / Memory / Disk\n- Pod scaling events\n- DB connection pool usage\n- Cache hit ratio\n- Kafka queue lag\n\n---\n\n# 14. Failure Handling\n\n- Do not abort test on first failure\n- Allow partial degradation\n- Capture system behavior under stress\n- Log all errors for post-analysis\n\n---\n\n# 15. Summary\n\nPerformance testing for ShopSphere must simulate real-world customer behavior under varying load conditions. The goal is not only to meet SLAs but to ensure system resilience under unpredictable traffic spikes and production-like workloads.",
+  "previous_report_raw": "# ShopSphere - Previous Performance Test Report\n\n**Environment:** Staging  \n**Test Date:** 2026-05-10  \n**Test Type:** Load + Stress Testing  \n**Version Tested:** v0.9\n\n---\n\n# 1. Executive Summary\n\nThe ShopSphere platform was tested under expected production-like workloads to evaluate system stability, scalability, and SLA compliance.\n\nThe system performed adequately under normal load but exhibited degradation in order and payment services under peak conditions.\n\n---\n\n# 2. Test Configuration\n\n- Virtual Users: 5,000\n- Test Duration: 45 minutes\n- Ramp-up Time: 10 minutes\n- Max Throughput Achieved: 1,200 RPS\n\n---\n\n# 3. Key Results\n\n## 3.1 Response Times\n\n| API | Avg (ms) | P95 (ms) | P99 (ms) |\n|-----|----------|----------|----------|\n| /login | 110 | 190 | 300 |\n| /products | 95 | 160 | 250 |\n| /search | 140 | 240 | 380 |\n| /cart | 180 | 320 | 500 |\n| /orders | 300 | 520 | 800 |\n| /payment | 420 | 700 | 1100 |\n\n---\n\n## 3.2 Throughput\n\n- Peak RPS: 1,200\n- Sustained RPS: 950\n- Bottleneck started at: ~1,000 concurrent users\n\n---\n\n## 3.3 Error Rates\n\n| API | Error Rate |\n|-----|------------|\n| /login | 0.05% |\n| /products | 0.10% |\n| /orders | 1.20% |\n| /payment | 2.50% |\n\n---\n\n# 4. Infrastructure Behavior\n\n- CPU peaked at 78%\n- Memory peaked at 72%\n- Order service showed DB connection pool exhaustion\n- Payment service experienced external API latency spikes\n- Redis cache hit ratio dropped during peak load (65%)\n\n---\n\n# 5. Observed Bottlenecks\n\n## 5.1 Order Service\n\n- High DB contention\n- Slow transaction commits\n- Connection pool saturation\n\n## 5.2 Payment Service\n\n- External dependency (Stripe simulation latency)\n- High retry count\n- Increased timeout failures\n\n## 5.3 Cache Layer\n\n- Redis eviction during peak traffic\n- Reduced cache effectiveness for product browsing\n\n---\n\n# 6. SLA Compliance (Previous System)\n\n| Metric | Target | Achieved | Status |\n|--------|--------|----------|--------|\n| Availability | 99.95% | 99.80% | ❌ |\n| P95 Response Time | < 500 ms | 520 ms | ❌ |\n| Error Rate | < 1% | 1.8% | ❌ |\n| Payment Success Rate | > 99.5% | 97.5% | ❌ |\n\n---\n\n# 7. Key Learnings\n\n- System does not scale well beyond 1,000 RPS\n- Payment service is the weakest dependency\n- Order service requires database optimization\n- Cache strategy needs improvement during peak loads\n- Horizontal scaling improved stability but not latency\n\n---\n\n# 8. Recommendations from Previous Cycle\n\n- Increase DB connection pool size for Order Service\n- Introduce circuit breaker for Payment Service\n- Improve Redis cache eviction policy\n- Add queue-based buffering for order processing\n- Optimize product search indexing\n\n---\n\n# 9. Known Risks Identified\n\n- Payment gateway latency variability\n- Database contention under high concurrency\n- Cache stampede during flash sales\n- Kafka backlog buildup during peak load\n\n---\n\n# 10. Baseline for Future Tests\n\nThis report defines the baseline for all future performance tests.\n\nFuture systems should aim to:\n\n- Reduce P95 latency by 20–30%\n- Reduce error rate below 1%\n- Improve peak throughput beyond 2,000 RPS\n- Achieve stable autoscaling beyond 5,000 concurrent users\n\n---\n\n# 11. Summary\n\nThe system is functional but not yet production-grade for high traffic events. The most critical improvements are required in Order and Payment services to achieve enterprise SLA compliance.",
+  "workload": {
+    "browse_products": 35,
+    "search_products": 20,
+    "view_product_details": 15,
+    "add_to_cart": 10,
+    "checkout_flow": 8,
+    "payment_processing": 5,
+    "order_tracking": 4,
+    "user_authentication": 3,
+    "notifications_view": 3
+  }
+}
