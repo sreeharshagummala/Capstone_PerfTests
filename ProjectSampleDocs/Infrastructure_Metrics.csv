@@ -1,0 +1,44 @@
+Timestamp,Cluster,Namespace,Service,PodsRunning,CPUUtilization(%),MemoryUtilization(%),NetworkIn(MBps),NetworkOut(MBps),DiskIO(MBps),RequestsPerSecond,AvgLatency(ms),P95Latency(ms),HTTP5xxErrors,NodeCount,HPAReplicas
+2026-06-20 10:00,prod-cluster,ecommerce,api-gateway,2,42,58,12.5,10.8,5.1,980,110,180,2,3,2
+2026-06-20 10:00,prod-cluster,ecommerce,auth-service,2,38,52,4.2,3.9,1.8,180,120,210,0,3,2
+2026-06-20 10:00,prod-cluster,ecommerce,product-service,3,48,60,18.4,16.7,7.5,1200,90,160,1,3,3
+2026-06-20 10:00,prod-cluster,ecommerce,cart-service,2,44,55,6.8,6.2,2.6,320,145,250,1,3,2
+2026-06-20 10:00,prod-cluster,ecommerce,order-service,2,61,68,5.9,5.4,4.2,160,310,540,4,3,2
+2026-06-20 10:00,prod-cluster,ecommerce,payment-service,2,70,72,3.5,3.2,3.8,90,430,760,6,3,2
+2026-06-20 10:00,prod-cluster,ecommerce,notification-service,2,24,36,2.4,2.1,1.2,120,70,120,0,3,2
+
+2026-06-20 11:00,prod-cluster,ecommerce,api-gateway,2,55,63,16.8,14.9,6.2,1180,125,210,3,3,2
+2026-06-20 11:00,prod-cluster,ecommerce,auth-service,2,45,58,5.4,4.9,2.0,240,130,225,0,3,2
+2026-06-20 11:00,prod-cluster,ecommerce,product-service,3,58,66,23.2,20.7,8.9,1450,98,175,1,3,3
+2026-06-20 11:00,prod-cluster,ecommerce,cart-service,2,52,61,8.2,7.5,3.2,410,165,290,2,3,2
+2026-06-20 11:00,prod-cluster,ecommerce,order-service,2,69,74,6.8,6.3,5.1,210,340,590,5,3,2
+2026-06-20 11:00,prod-cluster,ecommerce,payment-service,2,79,78,4.0,3.6,4.4,105,470,820,8,3,2
+
+2026-06-20 12:00,prod-cluster,ecommerce,api-gateway,3,63,69,20.4,18.2,7.4,1380,145,245,5,3,3
+2026-06-20 12:00,prod-cluster,ecommerce,auth-service,2,52,61,6.2,5.6,2.4,280,138,240,1,3,2
+2026-06-20 12:00,prod-cluster,ecommerce,product-service,4,66,71,28.5,25.3,10.2,1710,105,188,2,3,4
+2026-06-20 12:00,prod-cluster,ecommerce,cart-service,3,60,66,10.4,9.2,4.0,520,182,320,3,3,3
+2026-06-20 12:00,prod-cluster,ecommerce,order-service,3,77,80,8.2,7.5,5.8,260,380,650,7,3,3
+2026-06-20 12:00,prod-cluster,ecommerce,payment-service,2,87,84,4.6,4.2,5.0,120,520,910,10,3,2
+
+2026-06-20 13:00,prod-cluster,ecommerce,api-gateway,3,71,75,24.1,21.4,8.6,1610,168,290,7,3,3
+2026-06-20 13:00,prod-cluster,ecommerce,auth-service,3,59,66,7.1,6.4,2.9,340,150,260,1,3,3
+2026-06-20 13:00,prod-cluster,ecommerce,product-service,5,74,78,34.8,30.6,12.0,1960,118,205,3,3,5
+2026-06-20 13:00,prod-cluster,ecommerce,cart-service,3,67,72,12.3,11.0,4.9,640,205,350,4,3,3
+2026-06-20 13:00,prod-cluster,ecommerce,order-service,3,84,86,9.6,8.7,6.9,320,430,720,10,3,3
+2026-06-20 13:00,prod-cluster,ecommerce,payment-service,3,91,89,5.2,4.8,5.8,145,590,1030,14,3,3
+
+2026-06-20 14:00,prod-cluster,ecommerce,api-gateway,4,79,82,28.2,25.6,9.8,1850,190,330,10,4,4
+2026-06-20 14:00,prod-cluster,ecommerce,auth-service,3,64,70,8.0,7.2,3.2,390,162,280,2,4,3
+2026-06-20 14:00,prod-cluster,ecommerce,product-service,6,81,84,39.4,34.7,13.8,2250,130,225,4,4,6
+2026-06-20 14:00,prod-cluster,ecommerce,cart-service,4,74,77,14.5,12.8,5.8,760,228,390,6,4,4
+2026-06-20 14:00,prod-cluster,ecommerce,order-service,4,89,90,11.4,10.3,7.6,390,490,810,15,4,4
+2026-06-20 14:00,prod-cluster,ecommerce,payment-service,3,95,93,6.1,5.5,6.6,170,670,1180,20,4,3
+
+2026-06-20 15:00,prod-cluster,ecommerce,api-gateway,5,83,85,31.0,28.0,10.5,2100,215,370,12,5,5
+2026-06-20 15:00,prod-cluster,ecommerce,auth-service,4,68,74,8.8,8.0,3.6,430,175,295,3,5,4
+2026-06-20 15:00,prod-cluster,ecommerce,product-service,7,85,88,43.5,38.2,15.1,2480,142,240,5,5,7
+2026-06-20 15:00,prod-cluster,ecommerce,cart-service,5,79,81,16.8,14.9,6.7,910,250,420,8,5,5
+2026-06-20 15:00,prod-cluster,ecommerce,order-service,5,93,94,13.1,11.8,8.4,470,560,930,22,5,5
+2026-06-20 15:00,prod-cluster,ecommerce,payment-service,4,98,96,7.0,6.3,7.2,195,760,1290,29,5,4
+2026-06-20 15:00,prod-cluster,ecommerce,notification-service,2,35,42,3.1,2.8,1.5,180,82,135,0,5,2

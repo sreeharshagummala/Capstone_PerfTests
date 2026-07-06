@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopsphere-api-gateway
+  labels:
+    app: api-gateway
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: shopsphere/api-gateway:1.0
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopsphere-product-service
+  labels:
+    app: product-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      containers:
+        - name: product-service
+          image: shopsphere/product-service:1.0
+          ports:
+            - containerPort: 8081
+          resources:
+            requests:
+              cpu: "700m"
+              memory: "1Gi"
+            limits:
+              cpu: "1500m"
+              memory: "2Gi"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopsphere-cart-service
+  labels:
+    app: cart-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cart-service
+  template:
+    metadata:
+      labels:
+        app: cart-service
+    spec:
+      containers:
+        - name: cart-service
+          image: shopsphere/cart-service:1.0
+          ports:
+            - containerPort: 8082
+          resources:
+            requests:
+              cpu: "400m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopsphere-order-service
+  labels:
+    app: order-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service
+          image: shopsphere/order-service:1.0
+          ports:
+            - containerPort: 8083
+          resources:
+            requests:
+              cpu: "800m"
+              memory: "1Gi"
+            limits:
+              cpu: "2000m"
+              memory: "3Gi"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopsphere-payment-service
+  labels:
+    app: payment-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+    spec:
+      containers:
+        - name: payment-service
+          image: shopsphere/payment-service:1.0
+          ports:
+            - containerPort: 8084
+          resources:
+            requests:
+              cpu: "1000m"
+              memory: "2Gi"
+            limits:
+              cpu: "2500m"
+              memory: "4Gi"
