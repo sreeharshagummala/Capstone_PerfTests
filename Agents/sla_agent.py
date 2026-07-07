@@ -1,12 +1,8 @@
 import json
 import os
-
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-
 from Prompts.sla_prompt import SLA_PROMPT
-
-# shared base agent
 from Agents.base_agent import BaseAgent
 
 
@@ -19,15 +15,15 @@ class SLAAgent(BaseAgent):
         self.prompt = ChatPromptTemplate.from_messages([
             ("system", SLA_PROMPT),
             ("human", """
-NFR Benchmarks:
-{nfr}
-
-Metrics Analysis:
-{metrics}
-
-Architecture Analysis:
-{architecture}
-""")
+                        NFR Benchmarks:
+                        {nfr}
+                        
+                        Metrics Analysis:
+                        {metrics}
+                        
+                        Architecture Analysis:
+                        {architecture}
+                        """)
         ])
 
         self.chain = self.prompt | self.llm | self.parser

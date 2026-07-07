@@ -1,12 +1,8 @@
 import json
 import os
-
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-
 from Prompts.strategy_prompt import STRATEGY_PROMPT
-
-# shared base agent
 from Agents.base_agent import BaseAgent
 
 
@@ -19,21 +15,21 @@ class StrategyAgent(BaseAgent):
         self.prompt = ChatPromptTemplate.from_messages([
             ("system", STRATEGY_PROMPT),
             ("human", """
-Architecture Analysis:
-{architecture}
-
-Metrics Analysis:
-{metrics}
-
-NFR:
-{nfr}
-
-API List:
-{api}
-
-Workload:
-{workload}
-""")
+                        Architecture Analysis:
+                        {architecture}
+                        
+                        Metrics Analysis:
+                        {metrics}
+                        
+                        NFR:
+                        {nfr}
+                        
+                        API List:
+                        {api}
+                        
+                        Workload:
+                        {workload}
+                        """)
         ])
 
         self.chain = self.prompt | self.llm | self.parser

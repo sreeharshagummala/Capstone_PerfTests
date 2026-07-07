@@ -1,12 +1,8 @@
 import json
 import os
-
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-
 from Prompts.metrics_prompt import METRICS_ANALYZER_PROMPT
-
-# shared base agent
 from Agents.base_agent import BaseAgent
 
 
@@ -20,26 +16,24 @@ class MetricsAnalyzerAgent(BaseAgent):
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 ("system", METRICS_ANALYZER_PROMPT),
-                (
-                    "human",
+                ("human",
                     """
-Architecture Analysis
-
-{architecture}
-
-Historical Metrics
-
-{metrics}
-
-Infrastructure Metrics
-
-{infrastructure}
-
-Previous Report
-
-{previous_report}
-                    """,
-                ),
+                        Architecture Analysis
+                        
+                        {architecture}
+                        
+                        Historical Metrics
+                        
+                        {metrics}
+                        
+                        Infrastructure Metrics
+                        
+                        {infrastructure}
+                        
+                        Previous Report
+                        
+                        {previous_report}
+                                            """),
             ]
         )
 

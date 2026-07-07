@@ -23,19 +23,18 @@ class ArchitectureAnalyzerAgent(BaseAgent):
                 (
                     "human",
                     """
-Architecture Document:
-{architecture}
-
-OpenAPI:
-{api}
-
-Deployment:
-{deployment}
-
-Non Functional Requirements:
-{nfr}
-                    """,
-                ),
+                        Architecture Document:
+                        {architecture}
+                        
+                        OpenAPI:
+                        {api}
+                        
+                        Deployment:
+                        {deployment}
+                        
+                        Non Functional Requirements:
+                        {nfr}
+                            """),
             ]
         )
 

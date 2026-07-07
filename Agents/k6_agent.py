@@ -1,12 +1,8 @@
 import json
 import os
-
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-
 from Prompts.k6_prompt import K6_PROMPT
-
-# shared base agent
 from Agents.base_agent import BaseAgent
 
 
@@ -19,18 +15,18 @@ class K6Agent(BaseAgent):
         self.prompt = ChatPromptTemplate.from_messages([
             ("system", K6_PROMPT),
             ("human", """
-Performance Strategy:
-{strategy}
-
-SLA Targets:
-{sla}
-
-API List:
-{api}
-
-Workload:
-{workload}
-""")
+                        Performance Strategy:
+                        {strategy}
+                        
+                        SLA Targets:
+                        {sla}
+                        
+                        API List:
+                        {api}
+                        
+                        Workload:
+                        {workload}
+                        """)
         ])
 
         self.chain = self.prompt | self.llm | self.parser
