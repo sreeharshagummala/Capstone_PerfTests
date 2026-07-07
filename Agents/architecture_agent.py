@@ -1,26 +1,19 @@
 import json
 import os
-from dotenv import load_dotenv
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
-
 from Prompts.architecture_prompt import ARCHITECTURE_ANALYZER_PROMPT
+from Agents.base_agent import BaseAgent
 
-load_dotenv()
 
-class ArchitectureAnalyzerAgent:
+class ArchitectureAnalyzerAgent(BaseAgent):
 
     def __init__(
             self,
             model="gpt-4.1-mini",
             temperature=0,
     ):
-
-        self.llm = ChatOpenAI(
-            model=model,
-            temperature=temperature
-        )
+        super().__init__(model=model, temperature=temperature)
 
         self.parser = JsonOutputParser()
 
@@ -30,19 +23,18 @@ class ArchitectureAnalyzerAgent:
                 (
                     "human",
                     """
-Architecture Document:
-{architecture}
-
-OpenAPI:
-{api}
-
-Deployment:
-{deployment}
-
-Non Functional Requirements:
-{nfr}
-                    """,
-                ),
+                        Architecture Document:
+                        {architecture}
+                        
+                        OpenAPI:
+                        {api}
+                        
+                        Deployment:
+                        {deployment}
+                        
+                        Non Functional Requirements:
+                        {nfr}
+                            """),
             ]
         )
 
