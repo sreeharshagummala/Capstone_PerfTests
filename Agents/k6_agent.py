@@ -1,20 +1,19 @@
 import json
 import os
 
-from dotenv import load_dotenv
-load_dotenv()
-
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langchain_openai import ChatOpenAI
 
 from Prompts.k6_prompt import K6_PROMPT
 
+# shared base agent
+from Agents.base_agent import BaseAgent
 
-class K6Agent:
+
+class K6Agent(BaseAgent):
 
     def __init__(self, model="gpt-4.1-mini", temperature=0):
-        self.llm = ChatOpenAI(model=model, temperature=temperature)
+        super().__init__(model=model, temperature=temperature)
         self.parser = StrOutputParser()
 
         self.prompt = ChatPromptTemplate.from_messages([
